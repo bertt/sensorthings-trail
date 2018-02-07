@@ -39,7 +39,7 @@
 <div id="mapid">
     <div id="header">
         SensorThings Trail demo<br/>
-        SensorThings server: <input type="text" value="https://gost.geodan.nl/v1.0/Things(184)" size="50" readonly >
+        SensorThings server: <input type="text" id = "server" size="50" readonly >
     </div>
 </div>
 <script>
@@ -51,7 +51,16 @@
 			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 		id: 'mapbox.streets'
 	}).addTo(mymap);
-    var trail = "https://gost.geodan.nl/v1.0/Things(184)?$expand=HistoricalLocations($filter=date(time) eq date(now());$select=time),HistoricalLocations/Locations($select=location;$top=1)&$select=id,name,description";
+    thing_id=184;
+    var query = window.location.search.substring(1);
+    if(query!=""){
+        if(query.split("=")[0]=="thing"){
+            thing_id=query.split("=")[1];
+        }
+    }
+    var thing = "https://gost.geodan.nl/v1.0/Things(" + thing_id + ")";
+    document.getElementById("server").value= thing;
+    var trail = thing + "?$expand=HistoricalLocations($filter=date(time) eq date(now());$select=time),HistoricalLocations/Locations($select=location;$top=1)&$select=id,name,description";
     var polylinePoints = [];
 
     $.get(trail,

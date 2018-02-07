@@ -37,6 +37,7 @@
 	}).addTo(mymap);
 
     var trail = "https://gost.geodan.nl/v1.0/Things(184)?$expand=HistoricalLocations/Locations";
+    var polylinePoints = [];
 
     $.get(trail,
         function(data) {
@@ -44,10 +45,23 @@
                 var t = data.HistoricalLocations[i].time;
                 var y = data.HistoricalLocations[i].Locations[0].location.coordinates[0];
                 var x = data.HistoricalLocations[i].Locations[0].location.coordinates[1];
-  
-                console.log(x + ", " + y);
-                L.marker([y, x]).bindTooltip(t, {permanent: true, direction: 'right'}).addTo(mymap);
+                var l = new L.LatLng(y,x);
+                polylinePoints.push(l);
+                var circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10}).bindTooltip(t, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})}).addTo(mymap);
             }
+
+            // draw polyline trail
+            var polylineOptions = {
+               color: 'blue',
+               weight: 1,
+               opacity: 0.9
+             };
+
+            var polyline = new L.Polyline(polylinePoints, polylineOptions);
+            mymap.addLayer(polyline);                        
+
+            // zoom the map to the polyline. first need to clean data
+            // mymap.fitBounds(polyline.getBounds());            
         }
     );
 </script>

@@ -22,19 +22,26 @@
             height: 100%;
             width: 100%;
         }
-	header {
-	    position:relative; 
-	    top: 10px;
-	}
+	    #header {
+	        position:relative; 
+	        top: 10px;
+            left:50px;
+            z-index: 1000;
+            font-size: 20px;
+            border-style:solid;
+            width:500px;
+            background-color: gray;
+            border-radius: 5%;
+	    }
     </style>
 </head>
 <body>
-<div id="header">
-    SensorThings Trail demo<br/>
-    SensorThings server: <input type="text" name="server" id = "server" value="https://gost.geodan.nl/v1.0/Things(184)" size="50" readonly >
+<div id="mapid">
+    <div id="header">
+        SensorThings Trail demo<br/>
+        SensorThings server: <input type="text" value="https://gost.geodan.nl/v1.0/Things(184)" size="50" readonly >
+    </div>
 </div>
-<div id="mapid"></div>
-
 <script>
 	var mymap = L.map('mapid').setView([52.3431962,4.9104989], 13);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -44,8 +51,7 @@
 			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 		id: 'mapbox.streets'
 	}).addTo(mymap);
-
-    var trail = "https://gost.geodan.nl/v1.0/Things(184)?$expand=HistoricalLocations/Locations";
+    var trail = "https://gost.geodan.nl/v1.0/Things(184)?$expand=HistoricalLocations($filter=date(time) eq date(now());$select=time),HistoricalLocations/Locations($select=location;$top=1)&$select=id,name,description";
     var polylinePoints = [];
 
     $.get(trail,
@@ -69,8 +75,7 @@
             var polyline = new L.Polyline(polylinePoints, polylineOptions);
             mymap.addLayer(polyline);                        
 
-            // zoom the map to the polyline. first need to clean data
-            // mymap.fitBounds(polyline.getBounds());            
+            mymap.fitBounds(polyline.getBounds());            
         }
     );
 </script>

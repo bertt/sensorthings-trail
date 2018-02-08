@@ -89,11 +89,13 @@
         function(data) {
             for(i=0;i<data.HistoricalLocations.length;i++){
                 var t = data.HistoricalLocations[i].time;
+                var d1=  new Date(t);
+                var datetext = d1.toTimeString().split(' ')[0];
                 var y = data.HistoricalLocations[i].Locations[0].location.coordinates[0];
                 var x = data.HistoricalLocations[i].Locations[0].location.coordinates[1];
                 var l = new L.LatLng(y,x);
                 polylinePoints.push(l);
-                var circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10}).bindTooltip(i + ": "+ t, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})}).addTo(mymap);
+                var circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10}).bindTooltip(i + ": "+ datetext, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})}).addTo(mymap);
             }
 
             // draw polyline trail

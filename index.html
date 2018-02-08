@@ -40,7 +40,6 @@
 <div id="mapid">
     <div id="header">
         SensorThings Trail demo<br/>
-        SensorThings server: <input type="text" id = "server" size="50" readonly >
         <div id="owner"></div>
     </div>
 </div>
@@ -99,11 +98,10 @@
 
     $.get(thing,
         function(data) {
-            document.getElementById("owner").innerHTML="Device: "+ data.name;
+            document.getElementById("owner").innerHTML="Device: "+ data.name + " (" + thing_id + ")";
         }
     );
     
-    document.getElementById("server").value= thing;
     var trail = thing + "?$expand=HistoricalLocations($filter=date(time) eq date(now());$select=time),HistoricalLocations/Locations($select=location;$top=1)&$select=id,name,description";
     var polylinePoints = [];
 

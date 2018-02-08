@@ -1,4 +1,4 @@
-sensorthings-trail
+# sensorthings-trail
 
 Shows a trail of SensorThings locations in Leaflet map. 
 

@@ -51,14 +51,25 @@
         client.subscribe("Things(" + thing_id + ")/Locations");
     }
 
+    function DrawPoint(x,y,label){
+        var circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10}).bindTooltip(label, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})}).addTo(mymap);
+    }
+
     // called when a message arrives
     function onMessageArrived(message) {
         var json = $.parseJSON(message.payloadString);
         var y= json.location.coordinates[0];
         var x= json.location.coordinates[1];
         console.log(x + ", " + y);
+        var l = new L.LatLng(y,x);
+        polylinePoints.push(l);
+        if(traillayer!=null){
+            mymap.removeLayer(traillayer);
+        }
+        DrawTrail(false);
     }
 
+    var traillayer;
 	var mymap = L.map('mapid').setView([52.3431962,4.9104989], 13);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
@@ -74,6 +85,9 @@
             thing_id=query.split("=")[1];
         }
     }
+
+    // trail color
+    var polylineOptions = {color: 'blue',weight: 1,opacity: 0.9};
 
     // wss://gost.geodan.nl:9002/
     // client.onConnectionLost = onConnectionLost;
@@ -103,22 +117,20 @@
                 var x = data.HistoricalLocations[i].Locations[0].location.coordinates[1];
                 var l = new L.LatLng(y,x);
                 polylinePoints.push(l);
-                var circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10}).bindTooltip(i + ": "+ datetext, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})}).addTo(mymap);
+                DrawPoint(x,y,datetext);
             }
 
-            // draw polyline trail
-            var polylineOptions = {
-               color: 'blue',
-               weight: 1,
-               opacity: 0.9
-             };
-
-            var polyline = new L.Polyline(polylinePoints, polylineOptions);
-            mymap.addLayer(polyline);                        
-
-            mymap.fitBounds(polyline.getBounds());            
+            DrawTrail(true);
         }
     );
+
+    function DrawTrail(pan){
+        var polyline = new L.Polyline(polylinePoints, polylineOptions);
+        traillayer = mymap.addLayer(polyline);
+        if(pan){
+            mymap.fitBounds(polyline.getBounds());            
+        }
+    }
 </script>
 </body>
 </html>

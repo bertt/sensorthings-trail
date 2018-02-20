@@ -105,33 +105,59 @@
         }
     );
     
-    var trail = thing + "?$expand=HistoricalLocations($filter=date(time) eq date(now());$select=time),HistoricalLocations/Locations($select=location;$top=1)&$select=id,name,description";
-    // show all: var trail = thing + "?$expand=HistoricalLocations/Locations";
+    var trailUrl = thing + "/HistoricalLocations?$expand=Locations";
     var polylinePoints = [];
+    GetTrail(trailUrl);
 
-    $.get(trail,
+
+    function GetTrail(trailUri){
+        var islastpage=false;
+        console.log("trail url: " + trailUri);
+        var today = new Date().getTime(); 
+        $.get(trailUri,
         function(data) {
-            for(i=0;i<data.HistoricalLocations.length;i++){
-                var t = data.HistoricalLocations[i].time;
-                var d1=  new Date(t);
-                var datetext = d1.toTimeString().split(' ')[0];
-                var y = data.HistoricalLocations[i].Locations[0].location.coordinates[0];
-                var x = data.HistoricalLocations[i].Locations[0].location.coordinates[1];
-                var l = new L.LatLng(y,x);
-                polylinePoints.push(l);
-                DrawPoint(x,y,datetext);
-            }
+            var d1;
+            if(data.value.length>0){
+                for(i=0;i<data.value.length;i++){
+                    var t = data.value[i].time;
+                    d1=  new Date(t);
+                    var datetext = d1.toTimeString().split(' ')[0];
+                    var y = data.value[i].Locations[0].location.coordinates[0];
+                    var x = data.value[i].Locations[0].location.coordinates[1];
+                    var l = new L.LatLng(y,x);
+                    if(today - d1.getTime() < 60 * 60 * 1000 * 24){
+                        polylinePoints.push(l);
+                        DrawPoint(x,y,datetext);
+                    }
+                    else{
+                        islastpage=true;
+                    }
+                }
+                if(data["@iot.nextLink"]!="" && !islastpage){
+                    if(today - d1.getTime() < 60 * 60 * 1000 * 24){
+                        GetTrail(data["@iot.nextLink"]);
+                    }
+                }
+                else {
+                    islastpage=true;
+                }
 
-            DrawTrail(true);
+                if(islastpage){
+                    DrawTrail(true);
+                }
+            }
         }
-    );
+        );
+    }
 
     function DrawTrail(pan){
-        polyline = new L.Polyline(polylinePoints, polylineOptions);
-        traillayer = mymap.addLayer(polyline);
+        if(polylinePoints.length>0) {
+            polyline = new L.Polyline(polylinePoints, polylineOptions);
+            traillayer = mymap.addLayer(polyline);
 
-        if(pan){
-            mymap.fitBounds(polyline.getBounds());            
+            if(pan){
+                mymap.fitBounds(polyline.getBounds());            
+            }
         }
     }
 </script>

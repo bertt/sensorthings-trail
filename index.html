@@ -49,9 +49,11 @@
         client.subscribe("Things(" + thing_id + ")/Locations");
     }
 
-    function DrawPoint(x,y,label){
+    function DrawPoint(x,y,label, tooltip){
         let circle = L.circle([y, x], {color: 'red',fillColor: '#f03',fillOpacity: 0.5,radius: 10});
-        circle.bindTooltip(label, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})});
+        if(tooltip){
+            circle.bindTooltip(label, {permanent: true, direction: 'right', offset: L.point({x: 10, y: 0})});
+        }
         circle.addTo(mymap);
     }
 
@@ -66,7 +68,7 @@
         if(traillayer!=null){
             mymap.removeLayer(polyline);
         }
-        DrawPoint(x,y, new Date().toTimeString().split(' ')[0]);
+        DrawPoint(x,y, new Date().toTimeString().split(' ')[0],true);
         // DrawTrail(false);
     }
 
@@ -127,7 +129,12 @@
                     var l = new L.LatLng(y,x);
                     if(today - d1.getTime() < 60 * 60 * 1000 * 24){
                         polylinePoints.push(l);
-                        DrawPoint(x,y,datetext);
+                        if(i==0 || i == data.value.length){
+                            DrawPoint(x,y,datetext,true);
+                        }
+                        else{
+                            DrawPoint(x,y,datetext,false);
+                        }
                     }
                     else{
                         islastpage=true;

@@ -145,6 +145,9 @@
                         if(polylinePoints.length<500){
                             GetTrail(data["@iot.nextLink"]);
                         }
+                        else{
+                            islastpage=true;
+                        }
                     }
                 }
                 else {
@@ -152,6 +155,8 @@
                 }
 
                 if(islastpage){
+                    polyline = new L.Polyline(polylinePoints, polylineOptions);
+                    mymap.fitBounds(polyline.getBounds());            
                     //DrawTrail(true);
                 }
             }

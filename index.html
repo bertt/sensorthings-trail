@@ -142,7 +142,7 @@
                 }
                 if(data["@iot.nextLink"]!="" && !islastpage){
                     if(today - d1.getTime() < 60 * 60 * 1000 * 24){
-                        if(polylinePoints.length<500){
+                        if(polylinePoints.length<5000){
                             GetTrail(data["@iot.nextLink"]);
                         }
                         else{

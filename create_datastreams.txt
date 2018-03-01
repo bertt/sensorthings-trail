@@ -1,1 +1,71 @@
 
+// create sensor gyroscope
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "Gyroscope",
+    "description": "Gyroscope",
+    "encodingType": "application/pdf",
+    "metadata": "Calibration date: Jan 1, 2014"
+}' "https://gost.geodan.nl/v1.0/Sensors"
+
+Response: https://gost.geodan.nl/v1.0/Sensors(130)
+
+// create sensor accelerometer
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "Accelerometer",
+    "description": "Accelerometer",
+    "encodingType": "application/pdf",
+    "metadata": "Calibration date: Jan 1, 2014"
+}' "https://gost.geodan.nl/v1.0/Sensors"
+
+Response: https://gost.geodan.nl/v1.0/Sensors(131)
+
+// create observedproperty for acceleration
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "Acceleration XYZ",
+    "description": "Acceleration XYZ",
+    "definition": "Calibration date: Jan 1, 2014"
+}' "https://gost.geodan.nl/v1.0/ObservedProperties"
+
+Response: https://gost.geodan.nl/v1.0/ObservedProperties(117)
+
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "Gyropscope XYZ",
+    "description": "Gyroscope XYZ",
+    "definition": "Calibration date: Jan 1, 2014"
+}' "https://gost.geodan.nl/v1.0/ObservedProperties"
+
+Response: https://gost.geodan.nl/v1.0/ObservedProperties(118)
+
+Create datastreams
+
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "thing 184, Datastream accelerometer",
+    "unitOfMeasurement": {
+        "symbol": "m /s2",
+        "name": "accelerations",
+        "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html"
+    },
+  "observationType":"http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+  "description": "Acceleration measurement",
+  "Thing": {"@iot.id": 184},
+  "ObservedProperty": {"@iot.id": 117},
+  "Sensor": {"@iot.id": 131}
+}' "https://gost.geodan.nl/v1.0/Datastreams"
+
+Response: https://gost.geodan.nl/v1.0/Datastreams(264)
+
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    "name": "thing 184, Datastream gyropscope",
+    "unitOfMeasurement": {
+        "symbol": "radians /second",
+        "name": "gyropscope measurement",
+        "definition": "http://www.qudt.org/qudt/owl/1.0.0/unit/Instances.html"
+    },
+  "observationType":"http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+  "description": "Gyropscope measurement",
+  "Thing": {"@iot.id": 184},
+  "ObservedProperty": {"@iot.id": 118},
+  "Sensor": {"@iot.id": 130}
+}' "https://gost.geodan.nl/v1.0/Datastreams"
+
+Response: https://gost.geodan.nl/v1.0/Datastreams(265)

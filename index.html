@@ -60,8 +60,8 @@
     // called when a message arrives
     function onMessageArrived(message) {
         const json = $.parseJSON(message.payloadString);
-        const y= json.location.coordinates[0];
-        const x= json.location.coordinates[1];
+        const x= json.location.coordinates[0];
+        const y= json.location.coordinates[1];
         console.log("new mqtt message arrived: " + x + ", " + y);
         const l = new L.LatLng(y,x);
         polylinePoints.push(l);
@@ -124,8 +124,8 @@
                     var t = data.value[i].time;
                     d1=  new Date(t);
                     var datetext = d1.toTimeString().split(' ')[0];
-                    var y = data.value[i].Locations[0].location.coordinates[0];
-                    var x = data.value[i].Locations[0].location.coordinates[1];
+                    var x = data.value[i].Locations[0].location.coordinates[0];
+                    var y = data.value[i].Locations[0].location.coordinates[1];
                     var l = new L.LatLng(y,x);
                     if(today - d1.getTime() < 60 * 60 * 1000 * 24){
                         polylinePoints.push(l);
